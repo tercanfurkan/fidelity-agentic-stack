@@ -1,5 +1,9 @@
 """FastMCP server exposing httpx documentation retrieval via FAISS."""
 
+import os
+
+os.environ.setdefault("KMP_DUPLICATE_LIB_OK", "TRUE")
+
 from dotenv import load_dotenv
 from fastmcp import FastMCP
 from langchain_community.vectorstores import FAISS
@@ -30,4 +34,4 @@ async def health_check(request: Request) -> Response:
 
 
 if __name__ == "__main__":
-    mcp.run(transport="sse", host="localhost", port=8765)
+    mcp.run(transport="streamable-http", host="localhost", port=8765)

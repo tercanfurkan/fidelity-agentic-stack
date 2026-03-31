@@ -17,9 +17,9 @@ ORCHESTRATOR_SYSTEM_PROMPT = (
 
 
 async def _call_mcp(query: str, k: int) -> str:
-    async with Client("http://localhost:8765/sse") as client:
+    async with Client("http://localhost:8765/mcp") as client:
         result = await client.call_tool("retrieve", {"query": query, "k": k})
-        return result[0].text
+        return result.content[0].text
 
 
 def orchestrator_node(state: dict) -> dict:
