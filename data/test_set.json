@@ -1,77 +1,77 @@
 [
   {
     "id": "Q01",
-    "query": "How do I configure a timeout for an httpx request?",
-    "reference": "Pass a timeout parameter to the request method or Client constructor. httpx.get(url, timeout=5.0) sets a 5-second timeout. Use httpx.Timeout for fine-grained control over connect, read, write, and pool timeouts."
+    "query": "How do I set a timeout for an httpx request?",
+    "reference": "Pass a timeout value in seconds to the request or Client: httpx.get(url, timeout=10.0). To disable timeouts use timeout=None. The default is 5 seconds. Set a client-wide default with httpx.Client(timeout=10.0)."
   },
   {
     "id": "Q02",
-    "query": "How do I use BasicAuth with httpx?",
-    "reference": "Pass an auth parameter to the request or Client. Use httpx.BasicAuth('username', 'password') or pass a (username, password) tuple directly: httpx.get(url, auth=('user', 'pass'))."
+    "query": "What are the four timeout types in httpx and how do I configure them individually?",
+    "reference": "httpx supports connect, read, write, and pool timeouts. Configure them individually with httpx.Timeout: httpx.Timeout(10.0, connect=60.0) sets a 60s connect timeout and 10s for all others. Pass the instance to a Client: httpx.Client(timeout=timeout)."
   },
   {
     "id": "Q03",
-    "query": "How do I follow redirects in httpx?",
-    "reference": "httpx does not follow redirects by default. Set follow_redirects=True on the request or Client to enable automatic redirect following."
+    "query": "Does httpx follow redirects by default, and how do I enable it?",
+    "reference": "httpx does not follow redirects by default — follow_redirects=False is the default for all request methods. Pass follow_redirects=True on a per-request basis or when constructing a Client to enable automatic redirect following."
   },
   {
     "id": "Q04",
-    "query": "What exception is raised when an httpx request times out?",
-    "reference": "httpx raises httpx.TimeoutException on timeout. Subclasses include httpx.ConnectTimeout, httpx.ReadTimeout, httpx.WriteTimeout, and httpx.PoolTimeout for finer-grained handling."
+    "query": "What exception does httpx raise when a request times out?",
+    "reference": "httpx raises httpx.TimeoutException as the base class. Subclasses are ConnectTimeout (connection), ReadTimeout (receiving data), WriteTimeout (sending data), and PoolTimeout (waiting for a pool connection)."
   },
   {
     "id": "Q05",
-    "query": "How do I send a POST request with JSON data using httpx?",
-    "reference": "Pass a json parameter to httpx.post(): httpx.post(url, json={'key': 'value'}). This automatically sets the Content-Type header to application/json and serialises the dict."
+    "query": "What exception does httpx raise when it cannot connect to a host?",
+    "reference": "httpx raises httpx.ConnectError when a connection cannot be established. The base class httpx.NetworkError covers all network-related errors. httpx.HTTPStatusError is separate and is only raised when calling response.raise_for_status() on 4xx/5xx responses."
   },
   {
     "id": "Q06",
-    "query": "How do I create a persistent HTTP connection pool with httpx?",
-    "reference": "Use httpx.Client as a context manager: with httpx.Client() as client: client.get(url). The Client maintains a connection pool across requests and should be reused rather than creating a new client per request."
+    "query": "How do I reuse TCP connections across multiple httpx requests?",
+    "reference": "Use httpx.Client as a context manager: with httpx.Client() as client: client.get(url). The Client uses HTTP connection pooling, reusing the underlying TCP connection to the same host. The top-level API (httpx.get()) creates a new connection for every request."
   },
   {
     "id": "Q07",
-    "query": "How do I set custom headers on an httpx request?",
-    "reference": "Pass a headers dict to the request or Client constructor: httpx.get(url, headers={'X-Custom': 'value'}). Headers set on the Client are merged with per-request headers, with per-request headers taking precedence."
+    "query": "How do I configure a base URL on an httpx Client so I don't repeat it in every request?",
+    "reference": "Pass base_url to the Client constructor: httpx.Client(base_url='http://httpbin.org'). Subsequent requests using relative URLs are resolved against this base: client.get('/headers') sends to http://httpbin.org/headers."
   },
   {
     "id": "Q08",
-    "query": "How do I make async HTTP requests with httpx?",
-    "reference": "Use httpx.AsyncClient with async/await: async with httpx.AsyncClient() as client: response = await client.get(url). AsyncClient mirrors the Client API but all request methods are coroutines."
+    "query": "What happens when I set headers on both the httpx Client and an individual request?",
+    "reference": "Headers are merged — client-level and request-level headers are combined. The same applies to query parameters and cookies. For all other parameters such as auth, the request-level value takes priority over the client-level value."
   },
   {
     "id": "Q09",
-    "query": "How do I handle connection errors in httpx?",
-    "reference": "Catch httpx.ConnectError for connection failures. The broader httpx.RequestError catches all request-level errors including timeouts and connection issues. httpx.HTTPStatusError is raised separately for 4xx/5xx responses when raise_for_status() is called."
+    "query": "How do I make asynchronous HTTP requests with httpx?",
+    "reference": "Use httpx.AsyncClient with async with and await: async with httpx.AsyncClient() as client: r = await client.get(url). All request methods on AsyncClient are coroutines. To close without a context manager, use await client.aclose()."
   },
   {
     "id": "Q10",
-    "query": "How do I upload a file using httpx?",
-    "reference": "Use the files parameter: httpx.post(url, files={'upload': open('file.txt', 'rb')}). For multipart forms with both files and fields, combine files and data parameters."
+    "query": "How do I disable SSL certificate verification in httpx?",
+    "reference": "Pass verify=False to the request: httpx.get(url, verify=False). For a Client instance, pass verify=False at instantiation. To use a custom CA bundle, pass an SSL context object as the verify argument."
   },
   {
     "id": "Q11",
-    "query": "How do I set a base URL for all requests in an httpx Client?",
-    "reference": "Pass base_url to the Client constructor: client = httpx.Client(base_url='https://api.example.com'). Relative URLs in subsequent requests are resolved against this base URL."
+    "query": "How do I stream a large response with httpx without loading it into memory?",
+    "reference": "Use the stream() context manager: with client.stream('GET', url) as response: for chunk in response.iter_bytes(): ... For async streaming use async with client.stream(...) and async for chunk in response.aiter_bytes()."
   },
   {
     "id": "Q12",
-    "query": "How do I disable SSL certificate verification in httpx?",
-    "reference": "Pass verify=False to the request or Client constructor: httpx.get(url, verify=False). To use a custom CA bundle, pass verify='/path/to/ca-bundle.crt'. Disabling verification is not recommended in production."
+    "query": "How do I use HTTP Basic authentication with httpx?",
+    "reference": "Pass a (username, password) tuple as the auth argument: httpx.get(url, auth=('user', 'pass')). Or use httpx.BasicAuth(username='user', password='secret'). Auth can be set per-request or on the Client constructor to apply to all requests."
   },
   {
     "id": "Q13",
-    "query": "How do I stream a large response with httpx?",
-    "reference": "Use the stream() context manager: with client.stream('GET', url) as response: for chunk in response.iter_bytes(): ... This avoids loading the entire response into memory."
+    "query": "How do I use HTTP Digest authentication with httpx?",
+    "reference": "Use httpx.DigestAuth(username='user', password='secret') as the auth argument. Digest auth requires an additional round-trip to negotiate and can be used over unencrypted HTTP connections, unlike Basic auth."
   },
   {
     "id": "Q14",
-    "query": "How do I add query parameters to an httpx request?",
-    "reference": "Pass a params dict: httpx.get(url, params={'key': 'value', 'page': 2}). httpx URL-encodes the parameters and appends them to the URL. List values produce repeated parameters."
+    "query": "How do I raise an exception for error HTTP responses in httpx?",
+    "reference": "Call response.raise_for_status() on the response. This raises httpx.HTTPStatusError for 4xx and 5xx status codes. Successful responses return the response instance unchanged, so it can be chained: r = httpx.get(url).raise_for_status()."
   },
   {
     "id": "Q15",
-    "query": "How do I use Bearer token authentication with httpx?",
-    "reference": "Use httpx.BearerAuth('token') as the auth parameter, or set an Authorization header directly: headers={'Authorization': 'Bearer your-token'}. BearerAuth can be set on the Client for all requests."
+    "query": "How do I send a Bearer token with httpx?",
+    "reference": "Set the Authorization header directly: httpx.get(url, headers={'Authorization': 'Bearer your-token'}). httpx does not have a built-in BearerAuth class — bearer tokens are passed as a custom header, either per-request or via the Client constructor."
   }
 ]
