@@ -1,0 +1,10 @@
+.venv/
+.env
+__pycache__/
+*.pyc
+data/httpx_docs/
+data/faiss_index/
+eval/results/
+paper_results/
+*.egg-info/
+.DS_Store
