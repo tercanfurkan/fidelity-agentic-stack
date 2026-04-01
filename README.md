@@ -1,6 +1,6 @@
 # Fidelity Agentic Stack
 
-Experimental evaluation harness for the paper *"Fidelity of the Agentic Stack: Measuring Information Preservation Across MCP, A2A, and A2UI Layers."*
+Experimental evaluation harness for the paper *"Fidelity of the Agentic Stack: Measuring Information Preservation Across MCP, A2A, and A2UI Layers"* ([read the paper](https://tercanfurkan.github.io/mcppaper)).
 
 Implements an end-to-end MCP → A2A → A2UI pipeline and measures how faithfully information is preserved at each layer using BERTScore. Results fill Tables 1a/1b in the paper.
 
