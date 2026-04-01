@@ -41,7 +41,7 @@ Query → MCP retrieve → R₀ (raw chunks) → LLM synthesise → R₁ (NL ans
 - **`agent/graph.py`** — LangGraph `StateGraph` with `PipelineState` TypedDict; wires orchestrator → formatter → END.
 - **`agent/orchestrator.py`** — Node 1: calls MCP tool via `asyncio.run()`, captures R₀, then calls `gpt-4o-mini` (temperature=0) to synthesise R₁.
 - **`agent/formatter.py`** — Node 2: calls `gpt-4o-mini` with JSON response format to produce R₂ `{summary, key_points, code_example, source_ref}`.
-- **`eval/run_eval.py`** — Manages MCP server subprocess, runs all 15 queries, writes `eval/results/raw_logs.json`, `eval/results/scores.csv`, and `paper_results/table1.md`.
+- **`eval/run_eval.py`** — Manages MCP server subprocess, runs all 30 queries, writes `eval/results/raw_logs.json`, `eval/results/scores.csv`, and `paper_results/table1.md`.
 - **`eval/score.py`** — Batches BERTScore P/R/F1 per layer; computes Δ₁ and Δ₂ on both F1 and Recall.
 
 ## Critical Constraints

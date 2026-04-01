@@ -44,15 +44,15 @@ Three testable hypotheses (any outcome is a valid finding):
 **Corpus**: httpx Python library documentation (https://www.python-httpx.org/).
 Chosen because answers are precise, keyword-dense, and grounded in a single authoritative source — making reference answer construction tractable and BERTScore meaningful.
 
-**Test queries**: 15 queries covering:
+**Test queries**: 30 queries covering:
 - Parameter behaviour (e.g., timeout configuration, follow_redirects)
 - Error handling (e.g., httpx.TimeoutException, ConnectError)
 - Authentication patterns (e.g., BasicAuth, BearerAuth)
 - Method signatures (e.g., httpx.Client, httpx.AsyncClient)
 
-**Critical constraint**: All 15 queries must require grounded retrieval — parametric LLM knowledge alone must be insufficient to answer them correctly without tool access. This is what makes the MCP layer scientifically necessary.
+**Critical constraint**: All 30 queries must require grounded retrieval — parametric LLM knowledge alone must be insufficient to answer them correctly without tool access. This is what makes the MCP layer scientifically necessary.
 
-**Test set authorship**: The complete `data/test_set.json` with all 15 queries and human-written reference answers is **pre-populated in this repository** and must not be modified by Claude Code under any circumstances. Reference answers were written from primary httpx documentation, independent of any system output. Claude Code must treat this file as immutable ground truth.
+**Test set authorship**: The complete `data/test_set.json` with all 30 queries and human-written reference answers is **pre-populated in this repository** and must not be modified by Claude Code under any circumstances. Reference answers were written from primary httpx documentation, independent of any system output. Claude Code must treat this file as immutable ground truth.
 
 ---
 
@@ -80,7 +80,7 @@ fidelity-agentic-stack/
 ├── .env.example                   # Environment variable template
 │
 ├── data/
-│   ├── test_set.json              # 15 queries + reference answers — DO NOT MODIFY
+│   ├── test_set.json              # 30 queries + reference answers — DO NOT MODIFY
 │   ├── httpx_docs/                # Raw httpx markdown docs (populated by scripts/fetch_docs.py)
 │   └── faiss_index/               # FAISS index files (populated by mcp_server/index.py)
 │       ├── index.faiss
@@ -106,7 +106,7 @@ fidelity-agentic-stack/
 │
 ├── eval/
 │   ├── __init__.py
-│   ├── run_eval.py                # Evaluation runner — manages MCP server subprocess, runs all 15 queries
+│   ├── run_eval.py                # Evaluation runner — manages MCP server subprocess, runs all 30 queries
 │   ├── score.py                   # BERTScore F1 computation for R₀, R₁, R₂
 │   └── results/                   # Created at runtime — do not commit contents
 │       ├── raw_logs.json
@@ -568,7 +568,7 @@ def score_all(
 
 ```python
 """
-Evaluation runner. Manages MCP server subprocess, runs all 15 queries,
+Evaluation runner. Manages MCP server subprocess, runs all 30 queries,
 captures R₀/R₁/R₂, scores with BERTScore, writes results.
 """
 import json, csv, subprocess, time, signal, sys
@@ -761,7 +761,7 @@ Display structure:
 
 ## Controlled Variables
 
-These must be held constant across all 15 queries. Any deviation invalidates the experimental results.
+These must be held constant across all 30 queries. Any deviation invalidates the experimental results.
 
 | Variable | Fixed value |
 |---|---|
@@ -896,8 +896,8 @@ The implementation is complete when all of the following are true:
 1. `scripts/fetch_docs.py` runs without error and populates `data/httpx_docs/` with httpx markdown files
 2. `mcp_server/index.py` runs without error and creates `data/faiss_index/index.faiss` and `data/faiss_index/index.pkl`
 3. `python eval/run_eval.py` completes without crashing, starts and stops the MCP server automatically
-4. `eval/results/raw_logs.json` contains 15 entries, each with non-null `r0`, `r1`, `r2`, `r2_text`
-5. `eval/results/scores.csv` contains 15 data rows plus a Mean row, all score cells populated
+4. `eval/results/raw_logs.json` contains 30 entries, each with non-null `r0`, `r1`, `r2`, `r2_text`
+5. `eval/results/scores.csv` contains 30 data rows plus a Mean row, all score cells populated
 6. `paper_results/table1.md` exists and contains a valid markdown table with 4 decimal place scores
 7. BERTScore F1 values are in a plausible range (0.80–0.97 for this task type)
 8. `streamlit run ui/app.py` renders a structured card for a sample query without errors

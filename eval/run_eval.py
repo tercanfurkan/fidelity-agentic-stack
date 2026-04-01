@@ -1,4 +1,4 @@
-"""Evaluation runner. Manages MCP server subprocess, runs all 15 queries,
+"""Evaluation runner. Manages MCP server subprocess, runs all 30 queries,
 captures R₀/R₁/R₂, scores with BERTScore, writes results."""
 
 import csv

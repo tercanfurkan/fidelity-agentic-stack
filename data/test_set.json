@@ -73,5 +73,80 @@
     "id": "Q15",
     "query": "How do I send a Bearer token with httpx?",
     "reference": "Set the Authorization header directly: httpx.get(url, headers={'Authorization': 'Bearer your-token'}). httpx does not have a built-in BearerAuth class — bearer tokens are passed as a custom header, either per-request or via the Client constructor."
+  },
+  {
+    "id": "Q16",
+    "query": "How do I enable HTTP/2 support in httpx?",
+    "reference": "Install httpx[http2], then pass http2=True to the Client: httpx.Client(http2=True) or httpx.AsyncClient(http2=True). HTTP/2 is not enabled by default. If the server only supports HTTP/1.1, the client falls back automatically."
+  },
+  {
+    "id": "Q17",
+    "query": "How do I configure connection pool limits in httpx?",
+    "reference": "Use httpx.Limits: limits = httpx.Limits(max_keepalive_connections=5, max_connections=10) and pass to httpx.Client(limits=limits). Defaults are max_keepalive_connections=20, max_connections=100, keepalive_expiry=5 seconds. PoolTimeout is raised if a connection cannot be acquired from the pool."
+  },
+  {
+    "id": "Q18",
+    "query": "How do I pass a list of values for a single query parameter in httpx?",
+    "reference": "Pass a list as the parameter value: params = {'key': ['value1', 'value2']} then httpx.get(url, params=params). This encodes as ?key=value1&key=value2 in the URL."
+  },
+  {
+    "id": "Q19",
+    "query": "How do I configure automatic retries for connection errors in httpx?",
+    "reference": "Instantiate an httpx.HTTPTransport with retries: transport = httpx.HTTPTransport(retries=3) and pass to httpx.Client(transport=transport). Retries apply only to ConnectError and ConnectTimeout. For other retry logic use a library like tenacity."
+  },
+  {
+    "id": "Q20",
+    "query": "How do I send cookies with an httpx request?",
+    "reference": "Pass a cookies dict to the top-level API: httpx.get(url, cookies={'name': 'value'}). For domain-scoped cookies use httpx.Cookies(): cookies.set('name', 'value', domain='example.com'). When using a Client instance, cookies must be set on the Client constructor, not per-request. Response cookies are accessible via response.cookies."
+  },
+  {
+    "id": "Q21",
+    "query": "What exception does httpx raise when too many redirects are followed?",
+    "reference": "httpx raises httpx.TooManyRedirects, a subclass of RequestError. This occurs when the number of redirects exceeds the client's limit. The exception includes a .request attribute with the original request."
+  },
+  {
+    "id": "Q22",
+    "query": "What is the exception hierarchy for transport errors in httpx?",
+    "reference": "TransportError is a subclass of RequestError. Its subclasses are: TimeoutException (ConnectTimeout, ReadTimeout, WriteTimeout, PoolTimeout), NetworkError (ConnectError, ReadError, WriteError, CloseError), ProtocolError (LocalProtocolError, RemoteProtocolError), ProxyError, and UnsupportedProtocol."
+  },
+  {
+    "id": "Q23",
+    "query": "What exception does httpx raise when trying to read a response that has already been streamed?",
+    "reference": "httpx raises httpx.StreamConsumed, a subclass of StreamError. This occurs when accessing response.content or response.text after the stream has been consumed. Related exceptions include ResponseNotRead and StreamClosed."
+  },
+  {
+    "id": "Q24",
+    "query": "What exception does httpx raise for an invalid URL?",
+    "reference": "httpx raises httpx.InvalidURL. This is a standalone exception, not a subclass of HTTPError or RequestError. It is raised during URL parsing before any network request is made."
+  },
+  {
+    "id": "Q25",
+    "query": "How do I authenticate through an HTTP proxy in httpx?",
+    "reference": "Include credentials in the proxy URL: httpx.Client(proxy='http://user:pass@proxy-host:8080'). The username and password are sent using HTTP Basic authentication to the proxy server. This is separate from endpoint authentication set via auth=."
+  },
+  {
+    "id": "Q26",
+    "query": "How do I set authentication on all requests made by an httpx Client?",
+    "reference": "Pass auth to the Client constructor: httpx.Client(auth=('user', 'pass')). This applies Basic auth to every request. Override per-request by passing a different auth argument. Supports BasicAuth, DigestAuth, or any custom auth flow."
+  },
+  {
+    "id": "Q27",
+    "query": "How do I use httpx's Digest authentication over multiple requests with a Client?",
+    "reference": "Create a DigestAuth instance and pass it to the Client: auth = httpx.DigestAuth('user', 'pass'); client = httpx.Client(auth=auth). The client handles the challenge-response flow automatically across requests. Digest auth requires an additional round-trip to negotiate the authentication."
+  },
+  {
+    "id": "Q28",
+    "query": "How do I check which HTTP version was used for a response in httpx?",
+    "reference": "Access response.http_version, which returns a string: 'HTTP/1.0', 'HTTP/1.1', or 'HTTP/2'. Available on any response. To use HTTP/2, enable it on the Client: httpx.Client(http2=True). If the server only supports HTTP/1.1, the client falls back automatically."
+  },
+  {
+    "id": "Q29",
+    "query": "How do I use httpx with a WSGI application for testing without making real network requests?",
+    "reference": "Use httpx.WSGITransport: transport = httpx.WSGITransport(app=app) then httpx.Client(transport=transport, base_url='http://testserver'). The client calls the WSGI app directly. Set raise_app_exceptions=False to inspect 500 responses."
+  },
+  {
+    "id": "Q30",
+    "query": "How do I use a mock transport in httpx to return pre-determined responses during testing?",
+    "reference": "Use httpx.MockTransport with a handler function: def handler(request): return httpx.Response(200, json={'ok': True}) then transport = httpx.MockTransport(handler); client = httpx.Client(transport=transport). The handler receives each request and must return an httpx.Response."
   }
 ]
